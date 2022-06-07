@@ -5,3 +5,19 @@ body {
     margin: 0;
     padding: 0;
 }
+.welImg {
+    width: 100%;
+}
+
+.welcome {
+    /*background-image: url("https://img.freepik.com/free-photo/beautiful-view-sky-with-clouds-sunrise-partly-cloudy-colorful-sunset-natural-sky-background-texture-beautiful-color-look-like-sky-anime_479694-1443.jpg?w=2000");*/
+    background-image: url("https://i.pinimg.com/564x/dd/ec/df/ddecdfb112e2f30dcf572620e4cd54b8.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: 300px;
+}
+
+.search {
+    margin-top: -25px;
+}
