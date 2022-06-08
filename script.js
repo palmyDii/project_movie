@@ -1,16 +1,49 @@
-
-
-
-function getAllAnimeByGenre() { //sort by genre
-    let page = 1
-    fetch(`https://api.jikan.moe/v4/anime?page=${page}`)
+function getAnimeSearch(searchWord) { //search anime by name
+    fetch(`https://api.jikan.moe/v4/anime?q=${searchWord}&page=1`)
+    //fetch(`https://api.jikan.moe/v4/seasons/2018/summer`)
     .then(response => {
         return response.json()
     }) 
     .then(data => {
-        console.log('success', data.data[0].genres)
+        console.log('success', data.data)
+        for(let anime of data.data) {
+            addSearch(anime)
+        }
     })
 }
+function addSearch(data) { //search - add result to display
+    const searchResult = document.getElementById('serchResult')
+
+    let box = document.createElement('div')
+    box.classList.add('d-flex')
+    box.classList.add('col-lg-2')
+    box.classList.add('col-md-3')
+    box.classList.add('col-sm-4')
+    box.classList.add('col-5')
+    box.classList.add('my-2')
+
+    let boxBody = document.createElement('div')
+    boxBody.classList.add('card')
+    box.appendChild(boxBody)
+   
+    let image = document.createElement('img')
+    image.classList.add('card-img-top')
+    image.setAttribute('src', data.images.jpg.image_url)
+    boxBody.appendChild(image)
+
+    let textBody = document.createElement('div')
+    textBody.classList.add('card-body')
+    let text = document.createElement('p')
+    text.classList.add('card-text')
+    text.innerText = data.title
+    textBody.appendChild(text)
+
+    boxBody.appendChild(textBody)
+    box.appendChild(boxBody)
+
+    searchResult.appendChild(box)
+}
+
 
 
 function getGenre() {  //get all anime genre
@@ -23,7 +56,7 @@ function getGenre() {  //get all anime genre
         showGenreEach(data.data)
     })
 }
-function showGenreEach(data) {
+function showGenreEach(data) { //display genre each box
     const genres = []
     const genresName = []
     for (let genre of data) {
@@ -43,7 +76,7 @@ function showGenreEach(data) {
         addGenre(each)
     }
 }
-function addGenre(genre) { // home - show categories
+function addGenre(genre) { // home - display categories
     const genreGroup = document.getElementById('genre')
     let box = document.createElement('div')
     box.classList.add('card')
@@ -78,11 +111,25 @@ function addGenre(genre) { // home - show categories
 
     genreGroup.appendChild(box)
 }
+function getAllAnimeByGenre() { //click to sort by genre
+    let page = 1
+    fetch(`https://api.jikan.moe/v4/anime?page=${page}`)
+    .then(response => {
+        return response.json()
+    }) 
+    .then(data => {
+        //console.log('success', data.data[0].genres)
+    })
+}
+
 
 document.getElementById('search').addEventListener('click', () => {
     document.getElementById('categories').classList.add('visually-hidden')
-    console.log('ok')
-    
+
+    let searchWord = document.getElementById('searchWord').value
+    console.log(searchWord)
+    document.getElementById('serchResult').innerHTML = ''
+    getAnimeSearch(searchWord)
 })
 
 function onLoad() {
