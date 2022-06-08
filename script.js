@@ -33,10 +33,31 @@ function addSearch(data) { //search - add result to display
 
     let textBody = document.createElement('div')
     textBody.classList.add('card-body')
+    textBody.classList.add('d-flex')
+    textBody.classList.add('row')
+    textBody.classList.add('align-content-between')
+
     let text = document.createElement('p')
     text.classList.add('card-text')
     text.innerText = data.title
     textBody.appendChild(text)
+
+
+    let likeBox = document.createElement('div')
+    likeBox.classList.add('d-flex')
+    likeBox.classList.add('justify-content-end')
+    
+
+
+    let like = document.createElement('button')
+    like.classList.add('btn')
+    let likeIcon = document.createElement('i')
+    likeIcon.classList.add('bi')
+    likeIcon.classList.add('bi-heart')
+    like.appendChild(likeIcon)
+    likeBox.appendChild(like)
+
+    textBody.appendChild(likeBox)
 
     boxBody.appendChild(textBody)
     box.appendChild(boxBody)
