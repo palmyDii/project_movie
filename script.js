@@ -14,58 +14,56 @@ function getAnimeSearch(searchWord) { //search anime by name
 function addSearch(data) { //search - add result to display
     const searchResult = document.getElementById('serchResult')
 
-    let box = document.createElement('div')
-    box.classList.add('d-flex')
-    box.classList.add('col-lg-2')
-    box.classList.add('col-md-3')
-    box.classList.add('col-sm-4')
-    box.classList.add('col-5')
-    box.classList.add('my-2')
-
-    let boxBody = document.createElement('div')
+    let box = document.createElement('div') //1
+    box.classList.add('col')
+    
+    let boxBody = document.createElement('div') //2
     boxBody.classList.add('card')
+    boxBody.classList.add('h-100')
     box.appendChild(boxBody)
    
-    let image = document.createElement('img')
+    let image = document.createElement('img') //3
     image.classList.add('card-img-top')
     image.setAttribute('src', data.images.jpg.image_url)
     boxBody.appendChild(image)
 
-    let textBody = document.createElement('div')
+    let textBody = document.createElement('div') //3
     textBody.classList.add('card-body')
     textBody.classList.add('d-flex')
     textBody.classList.add('row')
     textBody.classList.add('align-content-between')
 
-    let text = document.createElement('p')
+    let text = document.createElement('p') //4
     text.classList.add('card-text')
     text.innerText = data.title
     textBody.appendChild(text)
 
-
-    let likeBox = document.createElement('div')
+    let likeBox = document.createElement('div') //4
     likeBox.classList.add('d-flex')
     likeBox.classList.add('justify-content-end')
-    
-
-
-    let like = document.createElement('button')
+    let like = document.createElement('button') //5
     like.classList.add('btn')
-    let likeIcon = document.createElement('i')
+    let likeIcon = document.createElement('i') //5
     likeIcon.classList.add('bi')
     likeIcon.classList.add('bi-heart')
     like.appendChild(likeIcon)
     likeBox.appendChild(like)
 
-    textBody.appendChild(likeBox)
+    likeBox.addEventListener('click', (e)=>{
+        alert('I like it ' + data.title)
+        e.stopPropagation()
+    })
 
+    textBody.appendChild(likeBox)
     boxBody.appendChild(textBody)
     box.appendChild(boxBody)
 
+    box.addEventListener('click', ()=>{
+        window.open(data.url, '_blank').focus();
+    })
+
     searchResult.appendChild(box)
 }
-
-
 
 function getGenre() {  //get all anime genre
     fetch('https://api.jikan.moe/v4/genres/anime')
@@ -99,16 +97,14 @@ function showGenreEach(data) { //display genre each box
 }
 function addGenre(genre) { // home - display categories
     const genreGroup = document.getElementById('genre')
+    let outerBox = document.createElement('div')
+    outerBox.classList.add('col')
+
     let box = document.createElement('div')
     box.classList.add('card')
-    box.classList.add('d-flex')
     box.classList.add('text-center')
-    box.classList.add('col-12')
-    box.classList.add('col-sm-6')
-    box.classList.add('col-md-4')
-    box.classList.add('border-info')
-
-
+    box.classList.add('py-5')  
+    
     let boxBody = document.createElement('div')
     boxBody.classList.add('card-body')
     box.appendChild(boxBody)
@@ -124,13 +120,14 @@ function addGenre(genre) { // home - display categories
     boxBody.appendChild(count)
 
     box.appendChild(boxBody)
+    outerBox.appendChild(box)
 
     box.addEventListener('click', () => {
         console.log(genre.name)
         //getAllAnimeByGenre()
     })
 
-    genreGroup.appendChild(box)
+    genreGroup.appendChild(outerBox)
 }
 function getAllAnimeByGenre() { //click to sort by genre
     let page = 1
@@ -143,14 +140,27 @@ function getAllAnimeByGenre() { //click to sort by genre
     })
 }
 
+function hideCategories() {
+    document.getElementById('categories').style.display = 'none'
+}
+function hideHome() {
+    document.getElementById('welcomeText').style.visibility = 'collapse'
+    document.getElementById('welcome').classList.remove('welcome-decor')
+    document.getElementById('searchBox').style.visibility = 'hidden'
+}
 
 document.getElementById('search').addEventListener('click', () => {
-    document.getElementById('categories').classList.add('visually-hidden')
+    hideCategories()
 
     let searchWord = document.getElementById('searchWord').value
     console.log(searchWord)
     document.getElementById('serchResult').innerHTML = ''
     getAnimeSearch(searchWord)
+})
+
+document.getElementById('welcome').addEventListener('click', ()=>{
+    //hideHome()
+    //console.log('welcome')
 })
 
 function onLoad() {
