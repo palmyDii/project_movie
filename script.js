@@ -72,10 +72,10 @@ function getGenre() {  //get all anime genre
     }) 
     .then(data => {
         //console.log('success', data)
-        showGenreEach(data.data)
+        getGenreEach(data.data)
     })
 }
-function showGenreEach(data) { //display genre each box
+function getGenreEach(data) { //display genre each box
     const genres = []
     const genresName = []
     for (let genre of data) {
@@ -90,7 +90,7 @@ function showGenreEach(data) { //display genre each box
             });
         }
     }
-    console.log(genres)
+    //console.log(genres)
     for(each of genres) {
         addGenre(each)
     }
@@ -140,27 +140,53 @@ function getAllAnimeByGenre() { //click to sort by genre
     })
 }
 
-function hideCategories() {
-    document.getElementById('categories').style.display = 'none'
-}
-function hideHome() {
-    document.getElementById('welcomeText').style.visibility = 'collapse'
-    document.getElementById('welcome').classList.remove('welcome-decor')
-    document.getElementById('searchBox').style.visibility = 'hidden'
-}
 
-document.getElementById('search').addEventListener('click', () => {
-    hideCategories()
+function clickSearch(search) {
+    hideHome()
+    showSearch()
 
-    let searchWord = document.getElementById('searchWord').value
+    let searchWord = document.getElementById(search).value
     console.log(searchWord)
     document.getElementById('serchResult').innerHTML = ''
+    document.getElementById('keyword').innerHTML = '"' +searchWord +'"'
     getAnimeSearch(searchWord)
+
+    document.getElementById('searchWord').value = searchWord
+}
+document.getElementById('search').addEventListener('click', () => {
+    clickSearch('searchWordHome')
+})
+document.getElementById('search-addon').addEventListener('click', () => {
+    clickSearch('searchWord')
 })
 
-document.getElementById('welcome').addEventListener('click', ()=>{
-    //hideHome()
-    //console.log('welcome')
+function hideSearch() {
+    document.getElementById('displaySearchResult').style.display = 'none'
+}
+function showSearch(){
+    document.getElementById('displaySearchResult').style.display = 'block'
+}
+
+function hideHome() {
+    document.getElementById('welcome').classList.remove('welcome-decor')
+    document.getElementById('welcomeText').style.display = 'none'
+    document.getElementById('searchBox').style.visibility = 'hidden'
+    document.getElementById('categories').style.display = 'none'
+}
+
+document.getElementById('home').addEventListener('click', (e)=>{ //go to home page
+    hideSearch()
+
+    document.getElementById('welcome').classList.add('welcome-decor')
+    document.getElementById('welcomeText').style.display = 'block'
+    document.getElementById('searchBox').style.visibility = 'visible'
+
+    document.getElementById('categories').style.display = 'block'
+    e.stopPropagation()
+
+    //reset value
+    document.getElementById('searchWord').value = ''
+    document.getElementById('searchWordHome').value = ''
 })
 
 function onLoad() {
