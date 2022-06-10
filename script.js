@@ -45,11 +45,15 @@ function addSearch(data) { //search - add result to display
     like.classList.add('btn')
     let likeIcon = document.createElement('i') //5
     likeIcon.classList.add('bi')
-    likeIcon.classList.add('bi-heart')
+    likeIcon.classList.add('bi-heart')    //heart
+    //likeIcon.classList.add('bi-heart-fill') //heart-fill
+    likeIcon.classList.add('text-danger') //heart-fill
+
+
     like.appendChild(likeIcon)
     likeBox.appendChild(like)
 
-    likeBox.addEventListener('click', (e)=>{
+    like.addEventListener('click', (e)=>{
         alert('I like it ' + data.title)
         e.stopPropagation()
     })
@@ -58,10 +62,15 @@ function addSearch(data) { //search - add result to display
     boxBody.appendChild(textBody)
     box.appendChild(boxBody)
 
-    box.addEventListener('click', ()=>{
-        window.open(data.url, '_blank').focus();
+    
+    box.addEventListener('dblclick', ()=>{
+        //alert('are you sure you like this?')
+        console.log('like')
     })
-
+    /*box.addEventListener('click', ()=>{
+        window.open(data.url, '_blank').focus();
+    })*/
+    
     searchResult.appendChild(box)
 }
 
@@ -92,7 +101,7 @@ function getGenreEach(data) { //display genre each box
     }
     //console.log(genres)
     for(each of genres) {
-        addGenre(each)
+        //addGenre(each) //hide cat for temporary
     }
 }
 function addGenre(genre) { // home - display categories
