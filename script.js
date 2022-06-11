@@ -63,16 +63,65 @@ function addSearch(data) { //search - add result to display
     box.appendChild(boxBody)
 
     
-    box.addEventListener('dblclick', ()=>{
-        //alert('are you sure you like this?')
-        console.log('like')
+    //isSingleClick: Boolean = true;     
+    box.addEventListener('click', ()=>{
+        this.isSingleClick = true;
+        setTimeout(()=>{
+            if(this.isSingleClick){
+                window.open(data.url, '_blank').focus();
+            }
+        },250)
     })
-    /*box.addEventListener('click', ()=>{
-        window.open(data.url, '_blank').focus();
-    })*/
+    box.addEventListener('dblclick', ()=>{
+        this.isSingleClick = false;
+        //alert('are you sure you like this?')
+        let cf = confirm(`Add '${data.title}' to favourite list ?`)
+        if(cf) {
+            likeClicked(data)
+        }
+        
+    })
     
     searchResult.appendChild(box)
 }
+
+function postAnime(anime) { //post liked anime
+    console.log(anime)
+
+    fetch('https://se104-project-backend.du.r.appspot.com/movies', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(anime)
+    }).then(response => {
+        return response.json()
+    }).then(data => {
+        console.log('post success', data)
+    })
+}
+function likeClicked(data) { //click to post
+    let anime = {}
+    anime.id = "316"
+    anime.movie = {
+        'url' : data.url,
+        'image_url' : data.images.jpg.image_url,
+        'title' : data.title,
+        'synopsis' : data.synopsis,
+        'type' : data.type,
+        'episodes' : data.mal_id,
+        'score' : data.score,
+        'rated' : data.rating
+    }
+    
+    //console.log(anime)
+    postAnime(anime)
+}
+
+function addLike() {
+    
+}
+
 
 function getGenre() {  //get all anime genre
     fetch('https://api.jikan.moe/v4/genres/anime')
