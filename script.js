@@ -79,7 +79,7 @@ function addSearch(data) { //search - add result to display
     searchResult.appendChild(box)
 }
 
-function postAnime(anime) { //post liked anime
+function postLikeAnime(anime) { //post liked anime
     console.log(anime)
 
     fetch('https://se104-project-backend.du.r.appspot.com/movies', {
@@ -111,31 +111,38 @@ function likeClicked(data) { //click to post
     }
     
     //console.log(anime)
-    postAnime(anime)
+    postLikeAnime(anime)
 }
 
 function addLike(anime) {
-    const favoriteList = document.getElementById('favoriteList')
+    const favList = document.getElementById('favList')
+    
+    let col = document.createElement('div')
+    col.classList.add('col')
+
     let card = document.createElement('div')
-    card.classList.add('card', 'mb-3')
+    card.classList.add('card')
 
     let cardRow = document.createElement('div')
     cardRow.classList.add('row', 'g-0')
     
     let imgBox =  document.createElement('div')
-    imgBox.classList.add('col-12', 'col-sm-4', 'col-md-2', 'text-center')
+    imgBox.classList.add('col-12', 'col-sm-6', 'col-md-4', 'text-center', 'text-sm-start')
+    //imgBox.classList.add('col-md-4')
     let img =  document.createElement('img')
-    img.classList.add('img-fluid', 'rounded-start', 'mh-[20rem]')
+    img.classList.add('img-fluid', 'rounded-start')
     img.setAttribute('src', anime.image_url)
+    img.setAttribute('style', 'max-height: 15rem')
     imgBox.appendChild(img)
 
     let cardBodyBox = document.createElement('div')
-    cardBodyBox.classList.add('col-12', 'col-sm-8', 'col-md-10')
+    cardBodyBox.classList.add('col-12', 'col-sm-6', 'col-md-8')
+    //cardBodyBox.classList.add('col-md-8')
 
     let cardBody = document.createElement('div')
     cardBody.classList.add('card-body')
 
-    let title = document.createElement('h4')
+    let title = document.createElement('h6')
     title.classList.add('card-title')
     title.innerText = anime.title
 
@@ -143,49 +150,32 @@ function addLike(anime) {
     firstInfo.classList.add('d-flex', 'col', 'card-text')
     let rate = document.createElement('p')
     rate.innerText = anime.rated
-    let space = document.createElement('p')
-    space.innerText = '&nbsp | &nbsp'
-    let genre = document.createElement('p')
-    genre.innerText = 'on working...'
-    firstInfo.appendChild(rate, space, genre)
-
-    let synopsis = document.createElement('p')
-    synopsis.classList.add('card-text')
-    synopsis.innerText = anime.synopsis
+    let score = document.createElement('p')
+    score.classList.add('border', 'border-info', 'px-1', 'rounded', 'ms-2', 'text-center')
+    score.innerHTML = `<b>score</b> ${anime.score}`
+    firstInfo.append(rate, score)
 
     let secondInfo = document.createElement('div')
-    secondInfo.classList.add('d-flex', 'justify-content-sm-between', 'align-items-end')
-
-    let left = document.createElement('div')
-    left.classList.add('d-flex', 'col')
-    let score = document.createElement('p')
-    score.classList.add('border', 'border-info', 'px-1', 'rounded', 'me-2', 'text-center')
-    score.innerHTML = `<b>score</b> ${anime.score}`
-    let airing = document.createElement('p')
-    airing.innerText = 'on working...'
-    left.appendChild(score, airing)
-
-    let right = document.createElement('div')
     let likeBut = document.createElement('button')
-    likeBut.classList.add('btn', 'border-danger', 'mx-3')
+    likeBut.classList.add('btn', 'border-danger', 'me-3')
     let likeIcon = document.createElement('i')
     likeIcon.classList.add('bi', 'bi-heart')
     likeBut.appendChild(likeIcon)
     let detailBut = document.createElement('button')
     detailBut.classList.add('btn', 'btn-warning')
     detailBut.innerText = 'More details'
-    right.append(likeBut, detailBut)
+    secondInfo.append(likeBut, detailBut)
 
-    secondInfo.append(left, right)
-
-    cardBody.appendChild(title)
-    cardBody.append(title, firstInfo, synopsis, secondInfo)
+    //cardBody.appendChild(title)
+    cardBody.append(title, firstInfo, secondInfo)
     cardBodyBox.appendChild(cardBody)
     cardRow.append(imgBox, cardBodyBox)
     card.appendChild(cardRow)
-    favoriteList.appendChild(card)
+    col.appendChild(card)
+    favList.appendChild(col)
 }
 function showLike() {
+    showFavorite()
     fetch(`https://se104-project-backend.du.r.appspot.com/movies/316`)
     .then(response => {
         return response.json()
@@ -226,7 +216,7 @@ function getGenreEach(data) { //display genre each box
     }
     //console.log(genres)
     for(each of genres) {
-        //addGenre(each) //hide cat for temporary
+        addGenre(each) //hide cat for temporary
     }
 }
 function addGenre(genre) { // home - display categories
@@ -309,7 +299,6 @@ function showHome() {
     document.getElementById('searchBox').style.visibility = 'visible'
 
     document.getElementById('categories').style.display = 'block'
-    e.stopPropagation()
 
     //reset value
     document.getElementById('searchWord').value = ''
@@ -325,13 +314,14 @@ function showSearch(){
 }
 
 function hideFavorite() {
-    document.getElementById('favoriteList').style.display = 'none'
+    document.getElementById('favList').style.display = 'none'
 }
 function showFavorite(){
-    document.getElementById('favoriteList').style.display = 'block'
+    document.getElementById('favList').style.display = 'flex'
 }
 document.getElementById('favoritePage').addEventListener('click', ()=>{
     console.log('like click')
+    hideAll()
     showLike()
 })
 
@@ -343,5 +333,7 @@ function hideAll() {
 
 function onLoad() {
     getGenre()
+    hideAll()
+    showHome()
 }
 window.addEventListener('load', onLoad)
