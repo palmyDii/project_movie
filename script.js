@@ -88,7 +88,7 @@ function likeClicked(data) { //click to post
         'title' : data.title,
         'synopsis' : data.synopsis,
         'type' : data.type,
-        'episodes' : data.episodes,
+        'episodes' : data.mal_id,
         'score' : data.score,
         'rated' : data.rating
     }
@@ -173,7 +173,6 @@ function addLike(anime) {
     let likeIcon = document.createElement('i')
     likeIcon.classList.add('bi', 'bi-heart-fill', 'text-danger')
     likeBut.appendChild(likeIcon)
-
     likeBut.addEventListener('click', ()=> {
         let cf = confirm(`Delete '${anime.title}' from favorite list ?`)
         if(cf) {
@@ -183,7 +182,14 @@ function addLike(anime) {
 
     let detailBut = document.createElement('button')
     detailBut.classList.add('btn', 'btn-warning')
+    detailBut.setAttribute('data-bs-toggle', 'modal')
+    detailBut.setAttribute('data-bs-target', '#myModal')
     detailBut.innerText = 'More details'
+    detailBut.addEventListener('click', ()=>{
+        getAnimeById(anime.episodes)
+    })
+
+
     secondInfo.append(likeBut, detailBut)
 
     cardBody.append(title, firstInfo, secondInfo)
@@ -210,6 +216,17 @@ function showLike() {
     })
 }
 
+
+function getAnimeById(id){
+    fetch(`https://api.jikan.moe/v4/anime/${id}`)
+    .then(response => {
+        return response.json()
+    }) 
+    .then(data => {
+        console.log('success', data.data)
+        alert(data.data.title)
+    })
+}
 
 function getGenre() {  //get all anime genre
     fetch('https://api.jikan.moe/v4/genres/anime')
@@ -305,6 +322,8 @@ document.getElementById('search').addEventListener('click', () => {
 document.getElementById('search-addon').addEventListener('click', () => {
     clickSearch('searchWord')
 })
+
+//detail
 
 function hideHome() {
     document.getElementById('welcome').classList.remove('welcome-decor')
