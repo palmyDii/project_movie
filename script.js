@@ -79,23 +79,6 @@ function addSearch(data) { //search - add result to display
     searchResult.appendChild(box)
 }
 
-function postLikeAnime(anime) { //post liked anime
-    console.log(anime)
-
-    fetch('https://se104-project-backend.du.r.appspot.com/movies', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(anime)
-    }).then(response => {
-        return response.json()
-    }).then(data => {
-        console.log('post success', data)
-        //hideSearch()
-        showLike(data)
-    })
-}
 function likeClicked(data) { //click to post
     let anime = {}
     anime.id = "316"
@@ -113,6 +96,37 @@ function likeClicked(data) { //click to post
     //console.log(anime)
     postLikeAnime(anime)
 }
+function postLikeAnime(anime) { //post liked anime
+    fetch('https://se104-project-backend.du.r.appspot.com/movies', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(anime)
+    }).then(response => {
+        return response.json()
+    }).then(data => {
+        console.log('post success', data)
+        //hideSearch()
+        showLike()
+    })
+}
+function deleteLikeAnime(user_id, mov_id) {
+    fetch(`https://se104-project-backend.du.r.appspot.com/movie?id=${user_id}&&movieId=${mov_id}`, {
+        method: 'DELETE'
+    }).then(response => {
+        if(response.ok) {
+            return response.json()
+        } else {
+            throw Error(response.statusText)
+        }
+    }).then(data => {
+        alert(`Delete '${data.title}' sucess`)
+        showLike()
+    }).catch(error => {
+        alert('Oh on! Something went wrong!', error)
+    })
+}
 
 function addLike(anime) {
     const favList = document.getElementById('favList')
@@ -128,7 +142,6 @@ function addLike(anime) {
     
     let imgBox =  document.createElement('div')
     imgBox.classList.add('col-12', 'col-sm-6', 'col-md-4', 'text-center', 'text-sm-start')
-    //imgBox.classList.add('col-md-4')
     let img =  document.createElement('img')
     img.classList.add('img-fluid', 'rounded-start')
     img.setAttribute('src', anime.image_url)
@@ -137,7 +150,6 @@ function addLike(anime) {
 
     let cardBodyBox = document.createElement('div')
     cardBodyBox.classList.add('col-12', 'col-sm-6', 'col-md-8')
-    //cardBodyBox.classList.add('col-md-8')
 
     let cardBody = document.createElement('div')
     cardBody.classList.add('card-body')
@@ -159,14 +171,21 @@ function addLike(anime) {
     let likeBut = document.createElement('button')
     likeBut.classList.add('btn', 'border-danger', 'me-3')
     let likeIcon = document.createElement('i')
-    likeIcon.classList.add('bi', 'bi-heart')
+    likeIcon.classList.add('bi', 'bi-heart-fill', 'text-danger')
     likeBut.appendChild(likeIcon)
+
+    likeBut.addEventListener('click', ()=> {
+        let cf = confirm(`Delete '${anime.title}' from favorite list ?`)
+        if(cf) {
+            deleteLikeAnime(316, anime.id)
+        }
+    })
+
     let detailBut = document.createElement('button')
     detailBut.classList.add('btn', 'btn-warning')
     detailBut.innerText = 'More details'
     secondInfo.append(likeBut, detailBut)
 
-    //cardBody.appendChild(title)
     cardBody.append(title, firstInfo, secondInfo)
     cardBodyBox.appendChild(cardBody)
     cardRow.append(imgBox, cardBodyBox)
@@ -175,7 +194,10 @@ function addLike(anime) {
     favList.appendChild(col)
 }
 function showLike() {
+    hideAll()
     showFavorite()
+    document.getElementById('favList').innerHTML = ''
+
     fetch(`https://se104-project-backend.du.r.appspot.com/movies/316`)
     .then(response => {
         return response.json()
@@ -284,7 +306,6 @@ document.getElementById('search-addon').addEventListener('click', () => {
     clickSearch('searchWord')
 })
 
-
 function hideHome() {
     document.getElementById('welcome').classList.remove('welcome-decor')
     document.getElementById('welcomeText').style.display = 'none'
@@ -321,7 +342,6 @@ function showFavorite(){
 }
 document.getElementById('favoritePage').addEventListener('click', ()=>{
     console.log('like click')
-    hideAll()
     showLike()
 })
 
@@ -332,8 +352,8 @@ function hideAll() {
 }
 
 function onLoad() {
-    getGenre()
     hideAll()
+    getGenre()
     showHome()
 }
 window.addEventListener('load', onLoad)
