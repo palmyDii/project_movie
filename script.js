@@ -18,8 +18,7 @@ function addSearch(data) { //search - add result to display
     box.classList.add('col')
     
     let boxBody = document.createElement('div') //2
-    boxBody.classList.add('card')
-    boxBody.classList.add('h-100')
+    boxBody.classList.add('card', 'h-100')
     box.appendChild(boxBody)
    
     let image = document.createElement('img') //3
@@ -28,10 +27,7 @@ function addSearch(data) { //search - add result to display
     boxBody.appendChild(image)
 
     let textBody = document.createElement('div') //3
-    textBody.classList.add('card-body')
-    textBody.classList.add('d-flex')
-    textBody.classList.add('row')
-    textBody.classList.add('align-content-between')
+    textBody.classList.add('card-body', 'd-flex', 'row', 'align-content-between')
 
     let text = document.createElement('p') //4
     text.classList.add('card-text')
@@ -39,14 +35,12 @@ function addSearch(data) { //search - add result to display
     textBody.appendChild(text)
 
     let likeBox = document.createElement('div') //4
-    likeBox.classList.add('d-flex')
-    likeBox.classList.add('justify-content-end')
+    likeBox.classList.add('d-flex', 'justify-content-end')
     let like = document.createElement('button') //5
     like.classList.add('btn')
     let likeIcon = document.createElement('i') //5
-    likeIcon.classList.add('bi')
-    likeIcon.classList.add('bi-heart')    //heart
-    //likeIcon.classList.add('bi-heart-fill') //heart-fill
+    likeIcon.classList.add('bi', 'bi-heart') //heart
+    //likeIcon.classList.add('bi', 'bi-heart-fill') //heart-fill
     likeIcon.classList.add('text-danger') //heart-fill
 
 
@@ -98,6 +92,8 @@ function postAnime(anime) { //post liked anime
         return response.json()
     }).then(data => {
         console.log('post success', data)
+        //hideSearch()
+        showLike(data)
     })
 }
 function likeClicked(data) { //click to post
@@ -109,7 +105,7 @@ function likeClicked(data) { //click to post
         'title' : data.title,
         'synopsis' : data.synopsis,
         'type' : data.type,
-        'episodes' : data.mal_id,
+        'episodes' : data.episodes,
         'score' : data.score,
         'rated' : data.rating
     }
@@ -118,8 +114,88 @@ function likeClicked(data) { //click to post
     postAnime(anime)
 }
 
-function addLike() {
+function addLike(anime) {
+    const favoriteList = document.getElementById('favoriteList')
+    let card = document.createElement('div')
+    card.classList.add('card', 'mb-3')
+
+    let cardRow = document.createElement('div')
+    cardRow.classList.add('row', 'g-0')
     
+    let imgBox =  document.createElement('div')
+    imgBox.classList.add('col-12', 'col-sm-4', 'col-md-2', 'text-center')
+    let img =  document.createElement('img')
+    img.classList.add('img-fluid', 'rounded-start', 'mh-[20rem]')
+    img.setAttribute('src', anime.image_url)
+    imgBox.appendChild(img)
+
+    let cardBodyBox = document.createElement('div')
+    cardBodyBox.classList.add('col-12', 'col-sm-8', 'col-md-10')
+
+    let cardBody = document.createElement('div')
+    cardBody.classList.add('card-body')
+
+    let title = document.createElement('h4')
+    title.classList.add('card-title')
+    title.innerText = anime.title
+
+    let firstInfo = document.createElement('div')
+    firstInfo.classList.add('d-flex', 'col', 'card-text')
+    let rate = document.createElement('p')
+    rate.innerText = anime.rated
+    let space = document.createElement('p')
+    space.innerText = '&nbsp | &nbsp'
+    let genre = document.createElement('p')
+    genre.innerText = 'on working...'
+    firstInfo.appendChild(rate, space, genre)
+
+    let synopsis = document.createElement('p')
+    synopsis.classList.add('card-text')
+    synopsis.innerText = anime.synopsis
+
+    let secondInfo = document.createElement('div')
+    secondInfo.classList.add('d-flex', 'justify-content-sm-between', 'align-items-end')
+
+    let left = document.createElement('div')
+    left.classList.add('d-flex', 'col')
+    let score = document.createElement('p')
+    score.classList.add('border', 'border-info', 'px-1', 'rounded', 'me-2', 'text-center')
+    score.innerHTML = `<b>score</b> ${anime.score}`
+    let airing = document.createElement('p')
+    airing.innerText = 'on working...'
+    left.appendChild(score, airing)
+
+    let right = document.createElement('div')
+    let likeBut = document.createElement('button')
+    likeBut.classList.add('btn', 'border-danger', 'mx-3')
+    let likeIcon = document.createElement('i')
+    likeIcon.classList.add('bi', 'bi-heart')
+    likeBut.appendChild(likeIcon)
+    let detailBut = document.createElement('button')
+    detailBut.classList.add('btn', 'btn-warning')
+    detailBut.innerText = 'More details'
+    right.append(likeBut, detailBut)
+
+    secondInfo.append(left, right)
+
+    cardBody.appendChild(title)
+    cardBody.append(title, firstInfo, synopsis, secondInfo)
+    cardBodyBox.appendChild(cardBody)
+    cardRow.append(imgBox, cardBodyBox)
+    card.appendChild(cardRow)
+    favoriteList.appendChild(card)
+}
+function showLike() {
+    fetch(`https://se104-project-backend.du.r.appspot.com/movies/316`)
+    .then(response => {
+        return response.json()
+    }) 
+    .then(data => {
+        console.log('get favorite success', data)
+        for(let anime of data) {
+            addLike(anime)
+        }
+    })
 }
 
 
@@ -218,12 +294,6 @@ document.getElementById('search-addon').addEventListener('click', () => {
     clickSearch('searchWord')
 })
 
-function hideSearch() {
-    document.getElementById('displaySearchResult').style.display = 'none'
-}
-function showSearch(){
-    document.getElementById('displaySearchResult').style.display = 'block'
-}
 
 function hideHome() {
     document.getElementById('welcome').classList.remove('welcome-decor')
@@ -231,8 +301,7 @@ function hideHome() {
     document.getElementById('searchBox').style.visibility = 'hidden'
     document.getElementById('categories').style.display = 'none'
 }
-
-document.getElementById('home').addEventListener('click', (e)=>{ //go to home page
+function showHome() {
     hideSearch()
 
     document.getElementById('welcome').classList.add('welcome-decor')
@@ -245,7 +314,32 @@ document.getElementById('home').addEventListener('click', (e)=>{ //go to home pa
     //reset value
     document.getElementById('searchWord').value = ''
     document.getElementById('searchWordHome').value = ''
+}
+document.getElementById('home').addEventListener('click', showHome)
+
+function hideSearch() {
+    document.getElementById('displaySearchResult').style.display = 'none'
+}
+function showSearch(){
+    document.getElementById('displaySearchResult').style.display = 'block'
+}
+
+function hideFavorite() {
+    document.getElementById('favoriteList').style.display = 'none'
+}
+function showFavorite(){
+    document.getElementById('favoriteList').style.display = 'block'
+}
+document.getElementById('favoritePage').addEventListener('click', ()=>{
+    console.log('like click')
+    showLike()
 })
+
+function hideAll() {
+    hideHome()
+    hideSearch()
+    hideFavorite()
+}
 
 function onLoad() {
     getGenre()
