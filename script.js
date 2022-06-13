@@ -78,6 +78,24 @@ function addSearch(data) { //search - add result to display
     
     searchResult.appendChild(box)
 }
+function clickSearch(search) {
+    hideAll()
+    showSearch()
+
+    let searchWord = document.getElementById(search).value
+    console.log(searchWord)
+    document.getElementById('serchResult').innerHTML = ''
+    document.getElementById('keyword').innerHTML = '"' +searchWord +'"'
+    getAnimeSearch(searchWord)
+
+    document.getElementById('searchWord').value = searchWord
+}
+document.getElementById('search').addEventListener('click', () => {
+    clickSearch('searchWordHome')
+})
+document.getElementById('search-addon').addEventListener('click', () => {
+    clickSearch('searchWord')
+})
 
 function likeClicked(data) { //click to post
     let anime = {}
@@ -141,7 +159,7 @@ function addLike(anime) {
     cardRow.classList.add('row', 'g-0')
     
     let imgBox =  document.createElement('div')
-    imgBox.classList.add('col-12', 'col-sm-6', 'col-md-4', 'text-center', 'text-sm-start')
+    imgBox.classList.add('col-12', 'col-sm-6', 'col-md-4', 'col-lg-3', 'text-center', 'text-sm-start')
     let img =  document.createElement('img')
     img.classList.add('img-fluid', 'rounded-start')
     img.setAttribute('src', anime.image_url)
@@ -149,7 +167,7 @@ function addLike(anime) {
     imgBox.appendChild(img)
 
     let cardBodyBox = document.createElement('div')
-    cardBodyBox.classList.add('col-12', 'col-sm-6', 'col-md-8')
+    cardBodyBox.classList.add('col-12', 'col-sm-6', 'col-md-8', 'col-lg-9')
 
     let cardBody = document.createElement('div')
     cardBody.classList.add('card-body')
@@ -186,7 +204,8 @@ function addLike(anime) {
     detailBut.setAttribute('data-bs-target', '#myModal')
     detailBut.innerText = 'More details'
     detailBut.addEventListener('click', ()=>{
-        getAnimeById(anime.episodes)
+        //getAnimeById(anime.episodes)
+        showDetails(anime)
     })
 
 
@@ -225,7 +244,21 @@ function getAnimeById(id){
     .then(data => {
         console.log('success', data.data)
         alert(data.data.title)
+        //showDetails(data.data)                 //show detail hide tempo
     })
+}
+function showDetails(anime){
+    console.log('detail', anime.title)
+    document.getElementById('modalTitle').innerText = anime.title 
+    document.getElementById('modalImg').src = anime.image_url
+    document.getElementById('modalTitleSmall').innerText = anime.title 
+    //document.getElementById('modalGenre').innerText = anime.title
+    document.getElementById('modalScore').innerHTML = `<b>score</b> ${anime.score}`
+    document.getElementById('modalRate').innerText = anime.rated
+    document.getElementById('modalType').innerText = anime.type
+    //document.getElementById('modalEng').innerText = anime.title
+    document.getElementById('modalSynopsis').innerText = anime.synopsis
+    document.getElementById('modalLink').href = anime.url
 }
 
 function getGenre() {  //get all anime genre
@@ -304,24 +337,7 @@ function getAllAnimeByGenre() { //click to sort by genre
 }
 
 
-function clickSearch(search) {
-    hideHome()
-    showSearch()
 
-    let searchWord = document.getElementById(search).value
-    console.log(searchWord)
-    document.getElementById('serchResult').innerHTML = ''
-    document.getElementById('keyword').innerHTML = '"' +searchWord +'"'
-    getAnimeSearch(searchWord)
-
-    document.getElementById('searchWord').value = searchWord
-}
-document.getElementById('search').addEventListener('click', () => {
-    clickSearch('searchWordHome')
-})
-document.getElementById('search-addon').addEventListener('click', () => {
-    clickSearch('searchWord')
-})
 
 //detail
 

@@ -60,10 +60,6 @@
         </div>
     </div>
     
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
-        Open modal
-    </button>
-
     <div id="categories" class="categories">
         <div class="d-flex justify-content-center my-3">
             <h2>Or <b>Browse</b> categories</h2>
@@ -103,40 +99,42 @@
         </div>--> 
     </div>
     
-    
+    <!--
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+        Open modal
+    </button>
+    -->
     <div id="myModal" class="modal">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Howl no Ugoku Shiro</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 id="modalTitle" class="modal-title">Howl no Ugoku Shiro</h5>
+                    <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body ">
+                <div class="modal-body">
                     <div class="text-center">
-                        <img src="https://cdn.myanimelist.net/images/anime/5/75810.jpg" class="img-fluid rounded-start mh-[15rem]" alt="...">
+                        <img id="modalImg" src="https://cdn.myanimelist.net/images/anime/5/75810.jpg" class="img-fluid rounded-start mh-[15rem]" alt="...">
                     </div>
-                    <h6>Howl no Ugoku Shiro</h6>
-                    <p class="text-secondary">Adventure/Drama/Fantasy/Romance</p>
-                    <div class="d-flex col"> <!--score, rate, and type-->
-                        <p class="border border-info px-1 rounded me-2 text-center"><b>score</b> 7.88</p>
-                        <p>PG-13</p>
-                        &nbsp;
-                        <p>Movie</p> 
+                    <h6 id="modalTitleSmall">Howl no Ugoku Shiro</h6>
+                    <!--
+                    <p id="modalGenre" class="text-secondary">Adventure/Drama/Fantasy/Romance</p>
+                    -->
+                    <div class="d-flex col"> 
+                        <p id="modalScore" class="border border-info px-1 rounded me-2 text-center"><b>score</b> 7.88</p>
+                        <p id="modalRate">PG-13</p>
+                        <p>&nbsp; | &nbsp;</p>
+                        <p id="modalType">Movie</p> 
                     </div>
-                    <p>English title : Howl's Moving Castle</p>
-
-                    <!--synopsis-->
-                    <p class="lh-sm">That jumbled piece of architecture, that cacophony of hissing steam and creaking joints, with smoke billowing from it as it moves on its own... That castle is home to the magnificent wizard Howl, infamous for both his magical prowess and for being a womanizer—or so the rumor goes in Sophie Hatter's small town. Sophie, as the plain daughter of a hatmaker, does not expect much from her future and is content with working hard in the shop. However, Sophie's simple life takes a turn for the exciting when she is ensnared in a disturbing situation, and the mysterious wizard appears to rescue her. Unfortunately, this encounter, brief as it may be, spurs the vain and vengeful Witch of the Waste—in a fit of jealousy caused by a past discord with Howl—to put a curse on the maiden, turning her into an old woman. In an endeavor to return to normal, Sophie must accompany Howl and a myriad of eccentric companions—ranging from a powerful fire demon to a hopping scarecrow—in his living castle, on a dangerous adventure as a raging war tears their kingdom apart. [Written by MAL Rewrite]</p>
-                    <a href="https://myanimelist.net/anime/431/Howl_no_Ugoku_Shiro" class="stretched-link">myanimelist</a>
+                    <!--
+                    <p id="modalEng">English title : Howl's Moving Castle</p>
+                    -->
+                    <p id="modalSynopsis" class="lh-sm">That jumbled piece of architecture, that cacophony of hissing steam and creaking joints, with smoke billowing from it as it moves on its own... That castle is home to the magnificent wizard Howl, infamous for both his magical prowess and for being a womanizer—or so the rumor goes in Sophie Hatter's small town. Sophie, as the plain daughter of a hatmaker, does not expect much from her future and is content with working hard in the shop. However, Sophie's simple life takes a turn for the exciting when she is ensnared in a disturbing situation, and the mysterious wizard appears to rescue her. Unfortunately, this encounter, brief as it may be, spurs the vain and vengeful Witch of the Waste—in a fit of jealousy caused by a past discord with Howl—to put a curse on the maiden, turning her into an old woman. In an endeavor to return to normal, Sophie must accompany Howl and a myriad of eccentric companions—ranging from a powerful fire demon to a hopping scarecrow—in his living castle, on a dangerous adventure as a raging war tears their kingdom apart. [Written by MAL Rewrite]</p>
+                    <a id="modalLink" href="https://myanimelist.net/anime/431/Howl_no_Ugoku_Shiro" target="_blank" class="stretched-link">myanimelist</a>
+                    
                 </div>
-                
-                
             </div>
-            </div>
+        </div>
     </div>
-      
-
-    
     
     <script src="./script.js" type="text/javascript"></script>    
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
