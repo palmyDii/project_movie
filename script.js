@@ -6,8 +6,14 @@ function getAnimeSearch(searchWord) { //search anime by name
     }) 
     .then(data => {
         console.log('success', data.data)
-        for(let anime of data.data) {
-            addSearch(anime)
+        if (data.data.length === 0){
+            console.log('no')
+            document.getElementById('keyword').innerHTML = 'search not found'
+        } else {
+            document.getElementById('keyword').innerHTML = '"' +searchWord +'"'
+            for(let anime of data.data) {
+                addSearch(anime)
+            }
         }
     })
 }
@@ -39,8 +45,19 @@ function addSearch(data) { //search - add result to display
     let like = document.createElement('button') //5
     like.classList.add('btn')
     let likeIcon = document.createElement('i') //5
-    likeIcon.classList.add('bi', 'bi-heart') //heart
-    //likeIcon.classList.add('bi', 'bi-heart-fill') //heart-fill
+    //likeIcon.classList.add('bi', 'bi-heart') //heart
+
+    function sum() {
+        console.log('sum')
+        return 11203
+    } 
+    let mal_id = sum()
+    //let mal_id = getLike(getMalId)
+    if(data.mal_id == mal_id) {
+        likeIcon.classList.add('bi', 'bi-heart-fill') //heart-fill
+    } else {
+        likeIcon.classList.add('bi', 'bi-heart') //heart
+    }
     likeIcon.classList.add('text-danger') //heart-fill
 
 
@@ -48,34 +65,44 @@ function addSearch(data) { //search - add result to display
     likeBox.appendChild(like)
 
     like.addEventListener('click', (e)=>{
-        alert('I like it ' + data.title)
-        e.stopPropagation()
+        likeToggle(data)
     })
 
     textBody.appendChild(likeBox)
     boxBody.appendChild(textBody)
     box.appendChild(boxBody)
 
-    
-    //isSingleClick: Boolean = true;     
-    box.addEventListener('click', ()=>{
+    /*box.addEventListener('click', ()=>{
         this.isSingleClick = true;
         setTimeout(()=>{
             if(this.isSingleClick){
                 window.open(data.url, '_blank').focus();
             }
-        },250)
-    })
+        },350)
+    })*/
     box.addEventListener('dblclick', ()=>{
-        this.isSingleClick = false;
-        //alert('are you sure you like this?')
+        //this.isSingleClick = false;
         let cf = confirm(`Add '${data.title}' to favourite list ?`)
         if(cf) {
-            likeClicked(data)
+            likeToggle(data)
+            //likeClicked(data)
         }
         
     })
-    
+
+    function likeToggle(data) {
+        if(likeIcon.classList.contains('bi-heart')) {
+            likeIcon.classList.replace('bi-heart','bi-heart-fill')
+            likeClicked(data)
+        } else {
+            likeIcon.classList.replace('bi-heart-fill', 'bi-heart')
+        }
+    }
+    function getMalId(anime) {
+        console.log(anime.episodes)
+        return anime.episodes
+    }
+
     searchResult.appendChild(box)
 }
 function clickSearch(search) {
@@ -85,7 +112,6 @@ function clickSearch(search) {
     let searchWord = document.getElementById(search).value
     console.log(searchWord)
     document.getElementById('serchResult').innerHTML = ''
-    document.getElementById('keyword').innerHTML = '"' +searchWord +'"'
     getAnimeSearch(searchWord)
 
     document.getElementById('searchWord').value = searchWord
@@ -111,6 +137,7 @@ function likeClicked(data) { //click to post
         'rated' : data.rating
     }
     
+    console.log('like click come')
     //console.log(anime)
     postLikeAnime(anime)
 }
@@ -218,11 +245,7 @@ function addLike(anime) {
     col.appendChild(card)
     favList.appendChild(col)
 }
-function showLike() {
-    hideAll()
-    showFavorite()
-    document.getElementById('favList').innerHTML = ''
-
+function getLike(callBack) {
     fetch(`https://se104-project-backend.du.r.appspot.com/movies/316`)
     .then(response => {
         return response.json()
@@ -230,10 +253,19 @@ function showLike() {
     .then(data => {
         console.log('get favorite success', data)
         for(let anime of data) {
-            addLike(anime)
+            callBack(anime)
+            //return anime.episodes
         }
     })
 }
+function showLike() {
+    hideAll()
+    showFavorite()
+    document.getElementById('favList').innerHTML = ''
+
+    getLike(addLike)
+}
+
 
 
 function getAnimeById(id){
@@ -337,10 +369,6 @@ function getAllAnimeByGenre() { //click to sort by genre
 }
 
 
-
-
-//detail
-
 function hideHome() {
     document.getElementById('welcome').classList.remove('welcome-decor')
     document.getElementById('welcomeText').style.display = 'none'
@@ -348,7 +376,7 @@ function hideHome() {
     document.getElementById('categories').style.display = 'none'
 }
 function showHome() {
-    hideSearch()
+    hideAll()
 
     document.getElementById('welcome').classList.add('welcome-decor')
     document.getElementById('welcomeText').style.display = 'block'
@@ -376,7 +404,6 @@ function showFavorite(){
     document.getElementById('favList').style.display = 'flex'
 }
 document.getElementById('favoritePage').addEventListener('click', ()=>{
-    console.log('like click')
     showLike()
 })
 
