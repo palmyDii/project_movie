@@ -7,7 +7,6 @@ function getAnimeSearch(searchWord) { //search anime by name
     .then(data => {
         console.log('success', data.data)
         if (data.data.length === 0){
-            console.log('no')
             document.getElementById('keyword').innerHTML = 'search not found'
         } else {
             document.getElementById('keyword').innerHTML = '"' +searchWord +'"'
@@ -45,21 +44,23 @@ function addSearch(data) { //search - add result to display
     let like = document.createElement('button') //5
     like.classList.add('btn')
     let likeIcon = document.createElement('i') //5
-    //likeIcon.classList.add('bi', 'bi-heart') //heart
+    likeIcon.classList.add('bi', 'bi-heart') //heart
 
-    function sum() {
-        console.log('sum')
-        return 11203
-    } 
-    let mal_id = sum()
-    //let mal_id = getLike(getMalId)
-    if(data.mal_id == mal_id) {
-        likeIcon.classList.add('bi', 'bi-heart-fill') //heart-fill
-    } else {
-        likeIcon.classList.add('bi', 'bi-heart') //heart
+    /*count++;
+    function getMalId(anime) {
+        console.log(count)
+        let movId = anime.episodes;
+        console.log(movId, data.title, data.mal_id)
+        if(data.mal_id == movId) {
+            console.log('same')
+            likeIcon.classList.add('bi', 'bi-heart-fill') //heart-fill
+        } else {
+            likeIcon.classList.add('bi', 'bi-heart') //heart
+        }
     }
-    likeIcon.classList.add('text-danger') //heart-fill
+    getLike(getMalId)*/
 
+    likeIcon.classList.add('text-danger') //heart-fill
 
     like.appendChild(likeIcon)
     likeBox.appendChild(like)
@@ -72,14 +73,6 @@ function addSearch(data) { //search - add result to display
     boxBody.appendChild(textBody)
     box.appendChild(boxBody)
 
-    /*box.addEventListener('click', ()=>{
-        this.isSingleClick = true;
-        setTimeout(()=>{
-            if(this.isSingleClick){
-                window.open(data.url, '_blank').focus();
-            }
-        },350)
-    })*/
     box.addEventListener('dblclick', ()=>{
         //this.isSingleClick = false;
         let cf = confirm(`Add '${data.title}' to favourite list ?`)
@@ -90,6 +83,8 @@ function addSearch(data) { //search - add result to display
         
     })
 
+    searchResult.appendChild(box)
+
     function likeToggle(data) {
         if(likeIcon.classList.contains('bi-heart')) {
             likeIcon.classList.replace('bi-heart','bi-heart-fill')
@@ -98,12 +93,6 @@ function addSearch(data) { //search - add result to display
             likeIcon.classList.replace('bi-heart-fill', 'bi-heart')
         }
     }
-    function getMalId(anime) {
-        console.log(anime.episodes)
-        return anime.episodes
-    }
-
-    searchResult.appendChild(box)
 }
 function clickSearch(search) {
     hideAll()
@@ -124,22 +113,46 @@ document.getElementById('search-addon').addEventListener('click', () => {
 })
 
 function likeClicked(data) { //click to post
-    let anime = {}
-    anime.id = "316"
-    anime.movie = {
-        'url' : data.url,
-        'image_url' : data.images.jpg.image_url,
-        'title' : data.title,
-        'synopsis' : data.synopsis,
-        'type' : data.type,
-        'episodes' : data.mal_id,
-        'score' : data.score,
-        'rated' : data.rating
-    }
-    
     console.log('like click come')
-    //console.log(anime)
-    postLikeAnime(anime)
+
+    function checkScore(){
+        if(data.score != null){
+            return data.score
+        } else { return '-'; }
+    }
+
+    getLikeValue().then(response => {
+        console.log('function', response)
+        let likeId = response; 
+        for(let malId of likeId) {
+            if(data.mal_id != malId) {
+                console.log('good')
+                let anime = {}
+                anime.id = "316"
+                anime.movie = {
+                    'url' : data.url,
+                    'image_url' : data.images.jpg.image_url,
+                    'title' : data.title,
+                    'synopsis' : data.synopsis,
+                    'type' : data.type,
+                    'episodes' : data.mal_id,
+                    'score' : checkScore(),
+                    'rated' : data.rating
+                }
+                postLikeAnime(anime)
+            } else {
+                console.log('bad')
+                alert('no! it already in the list')
+                break;
+
+            }
+        }
+    })
+    
+    
+}
+function checkDuplicate() {
+
 }
 function postLikeAnime(anime) { //post liked anime
     fetch('https://se104-project-backend.du.r.appspot.com/movies', {
@@ -173,6 +186,13 @@ function deleteLikeAnime(user_id, mov_id) {
     })
 }
 
+function showLike() {
+    hideAll()
+    showFavorite()
+    document.getElementById('favList').innerHTML = ''
+
+    getLike(addLike)
+}
 function addLike(anime) {
     const favList = document.getElementById('favList')
     
@@ -254,16 +274,22 @@ function getLike(callBack) {
         console.log('get favorite success', data)
         for(let anime of data) {
             callBack(anime)
-            //return anime.episodes
         }
     })
 }
-function showLike() {
-    hideAll()
-    showFavorite()
-    document.getElementById('favList').innerHTML = ''
-
-    getLike(addLike)
+function getLikeValue() {
+    return fetch(`https://se104-project-backend.du.r.appspot.com/movies/316`)
+    .then(response => {
+        return response.json()
+    }) 
+    .then(data => {
+        console.log('get favorite success', data)
+        let animeLiked = []
+        for(let anime of data) {
+            animeLiked.push(anime.episodes)
+        }
+        return animeLiked
+    })
 }
 
 
