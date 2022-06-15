@@ -152,7 +152,6 @@ function likeClicked(data) { //click to post
         }
     })
 }
-
 function postLikeAnime(anime) { //post liked anime
     fetch('https://se104-project-backend.du.r.appspot.com/movies', {
         method: 'POST',
@@ -334,12 +333,14 @@ function getGenreEach(data) { //display genre each box
     for (let genre of data) {
         let genreName = genre.name
         let genreCount = genre.count
+        let genreId = genre.mal_id
 
         if (!genresName.includes(genreName)) {
             genresName.push(genreName)
             genres.push({
                 name: genreName,
-                count: genreCount
+                count: genreCount,
+                id: genreId
             });
         }
     }
@@ -377,22 +378,30 @@ function addGenre(genre) { // home - display categories
 
     box.addEventListener('click', () => {
         console.log(genre.name)
-        //getAllAnimeByGenre()
+        getAndShowAnimeByGenre(genre.id, genre.name)
     })
 
     genreGroup.appendChild(outerBox)
 }
-function getAllAnimeByGenre() { //click to sort by genre
-    let page = 1
-    fetch(`https://api.jikan.moe/v4/anime?page=${page}`)
+function getAndShowAnimeByGenre(genreId, genreName) { //click to sort by genre
+    console.log(genreId, genreName)
+    fetch(`https://api.jikan.moe/v4/anime?genres=${genreId}`)
     .then(response => {
         return response.json()
     }) 
     .then(data => {
-        //console.log('success', data.data[0].genres)
+        let genreGroup = data.data
+        console.log('success', genreGroup)
+
+        document.getElementById('serchResult').innerHTML = ''
+        document.getElementById('keyword').innerHTML = 'Browse by category "' + genreName +'"'
+        for(let anime of genreGroup) {
+            addSearch(anime)
+        }
+        hideAll()
+        showSearch()
     })
 }
-
 
 function hideHome() {
     document.getElementById('welcome').classList.remove('welcome-decor')
