@@ -120,40 +120,39 @@ function likeClicked(data) { //click to post
             return data.score
         } else { return '-'; }
     }
-
+    //check duplicate
     getLikeValue().then(response => {
         console.log('function', response)
         let likeId = response; 
+        let noDuplicate = true
         for(let malId of likeId) {
             if(data.mal_id != malId) {
                 console.log('good')
-                let anime = {}
-                anime.id = "316"
-                anime.movie = {
-                    'url' : data.url,
-                    'image_url' : data.images.jpg.image_url,
-                    'title' : data.title,
-                    'synopsis' : data.synopsis,
-                    'type' : data.type,
-                    'episodes' : data.mal_id,
-                    'score' : checkScore(),
-                    'rated' : data.rating
-                }
-                postLikeAnime(anime)
             } else {
                 console.log('bad')
+                noDuplicate = false
                 alert('no! it already in the list')
                 break;
-
             }
         }
+        if(noDuplicate) {
+            let anime = {};
+            anime.id = "316"
+            anime.movie = {
+                'url' : data.url,
+                'image_url' : data.images.jpg.image_url,
+                'title' : data.title,
+                'synopsis' : data.synopsis,
+                'type' : data.type,
+                'episodes' : data.mal_id,
+                'score' : checkScore(),
+                'rated' : data.rating
+            }
+            postLikeAnime(anime)
+        }
     })
-    
-    
 }
-function checkDuplicate() {
 
-}
 function postLikeAnime(anime) { //post liked anime
     fetch('https://se104-project-backend.du.r.appspot.com/movies', {
         method: 'POST',
