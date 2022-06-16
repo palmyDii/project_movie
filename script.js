@@ -54,7 +54,7 @@ function addSearch(data) { //search - add result to display
     likeBox.appendChild(like)
 
     like.addEventListener('click', (e)=>{
-        addAnimeToLike()
+        likeToggle(data)
     })
 
     textBody.appendChild(likeBox)
@@ -69,8 +69,11 @@ function addSearch(data) { //search - add result to display
 
     function likeToggle(data) {
         if(likeIcon.classList.contains('bi-heart')) {
-            likeIcon.classList.replace('bi-heart','bi-heart-fill')
-            likeClicked(data)
+            let cf = confirm(`Add '${data.title}' to favourite list ?`)
+            if(cf) {
+                likeIcon.classList.replace('bi-heart','bi-heart-fill')
+                likeClicked(data)
+            }
         } else {
             let cf = confirm(`Delete '${data.title}' from favorite list ?`)
             if(cf) {
@@ -123,10 +126,7 @@ function addSearch(data) { //search - add result to display
             }
         }
         if(noDuplicate) {
-            let cf = confirm(`Add '${data.title}' to favourite list ?`)
-            if(cf) {
-                likeToggle(data)
-            }
+            likeToggle(data)
         } else {
             alert('This anime is already the favorites list.')
         }        
