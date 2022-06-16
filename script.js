@@ -27,7 +27,7 @@ function addSearch(data) { //search - add result to display
     box.appendChild(boxBody)
    
     let image = document.createElement('img') //3
-    image.classList.add('card-img-top')
+    image.classList.add('card-img-top')  
     image.setAttribute('src', data.images.jpg.image_url)
     boxBody.appendChild(image)
 
@@ -44,22 +44,31 @@ function addSearch(data) { //search - add result to display
     let like = document.createElement('button') //5
     like.classList.add('btn')
     let likeIcon = document.createElement('i') //5
-    likeIcon.classList.add('bi', 'bi-heart') //heart
+    //likeIcon.classList.add('bi', 'bi-heart') //heart
 
-    /*count++;
-    function getMalId(anime) {
-        console.log(count)
-        let movId = anime.episodes;
-        console.log(movId, data.title, data.mal_id)
-        if(data.mal_id == movId) {
-            console.log('same')
-            likeIcon.classList.add('bi', 'bi-heart-fill') //heart-fill
-        } else {
+    //check like and add icon-fill
+    let checkLiked = false;
+    getLikeValue().then(response => {
+        if(response.length == 0){
             likeIcon.classList.add('bi', 'bi-heart') //heart
+        } else {
+            for(let id of response) {
+                if(id == data.mal_id) {
+                    checkLiked = true
+                    break
+                } else {
+                    checkLiked = false;
+                }
+            }
+            if(checkLiked){
+                //console.log(data.title)
+                likeIcon.classList.add('bi', 'bi-heart-fill') //heart-fill
+            } else {
+                likeIcon.classList.add('bi', 'bi-heart') //heart
+            }
         }
-    }
-    getLike(getMalId)*/
-
+        
+    })
     likeIcon.classList.add('text-danger') //heart-fill
 
     like.appendChild(likeIcon)
@@ -74,13 +83,29 @@ function addSearch(data) { //search - add result to display
     box.appendChild(boxBody)
 
     box.addEventListener('dblclick', ()=>{
-        //this.isSingleClick = false;
-        let cf = confirm(`Add '${data.title}' to favourite list ?`)
-        if(cf) {
-            likeToggle(data)
-            //likeClicked(data)
-        }
-        
+        getLikeValue().then(response => {
+            console.log('function', response)
+            let likeId = response; 
+            let noDuplicate = true; //check duplicate
+            for(let malId of likeId) {
+                if(data.mal_id != malId) {
+                    console.log('good')
+                } else {
+                    console.log('bad')
+                    noDuplicate = false
+                    break;
+                }
+            }
+            if(noDuplicate) {
+                let cf = confirm(`Add '${data.title}' to favourite list ?`)
+                if(cf) {
+                    likeToggle(data)
+                    //likeClicked(data)
+                }
+            } else {
+                alert('This anime is already the favorites list.')
+            }
+        })
     })
 
     searchResult.appendChild(box)
@@ -114,6 +139,19 @@ document.getElementById('search-addon').addEventListener('click', () => {
 
 function likeClicked(data) { //click to post
     console.log('like click come')
+    let anime = {};
+    anime.id = "316"
+    anime.movie = {
+        'url' : data.url,
+        'image_url' : data.images.jpg.image_url,
+        'title' : data.title,
+        'synopsis' : data.synopsis,
+        'type' : data.type,
+        'episodes' : data.mal_id,
+        'score' : checkScore(),
+        'rated' : data.rating
+    }
+    postLikeAnime(anime)
 
     function checkScore(){
         if(data.score != null){
@@ -121,7 +159,7 @@ function likeClicked(data) { //click to post
         } else { return '-'; }
     }
     //check duplicate
-    getLikeValue().then(response => {
+    /*getLikeValue().then(response => {
         console.log('function', response)
         let likeId = response; 
         let noDuplicate = true
@@ -131,7 +169,7 @@ function likeClicked(data) { //click to post
             } else {
                 console.log('bad')
                 noDuplicate = false
-                alert('no! it already in the list')
+                alert('This anime is already the favorites list.')
                 break;
             }
         }
@@ -150,7 +188,7 @@ function likeClicked(data) { //click to post
             }
             postLikeAnime(anime)
         }
-    })
+    })*/
 }
 function postLikeAnime(anime) { //post liked anime
     fetch('https://se104-project-backend.du.r.appspot.com/movies', {
@@ -184,14 +222,14 @@ function deleteLikeAnime(user_id, mov_id) {
     })
 }
 
-function showLike() {
+function showLike() { //1
     hideAll()
     showFavorite()
     document.getElementById('favList').innerHTML = ''
 
-    getLike(addLike)
+    getLike()
 }
-function addLike(anime) {
+function addLike(anime) { //3
     const favList = document.getElementById('favList')
     
     let col = document.createElement('div')
@@ -263,7 +301,7 @@ function addLike(anime) {
     col.appendChild(card)
     favList.appendChild(col)
 }
-function getLike(callBack) {
+function getLike() { //2
     fetch(`https://se104-project-backend.du.r.appspot.com/movies/316`)
     .then(response => {
         return response.json()
@@ -271,7 +309,7 @@ function getLike(callBack) {
     .then(data => {
         console.log('get favorite success', data)
         for(let anime of data) {
-            callBack(anime)
+            addLike(anime)
         }
     })
 }
@@ -281,7 +319,7 @@ function getLikeValue() {
         return response.json()
     }) 
     .then(data => {
-        console.log('get favorite success', data)
+        //console.log('get favorite success', data)
         let animeLiked = []
         for(let anime of data) {
             animeLiked.push(anime.episodes)
@@ -291,18 +329,6 @@ function getLikeValue() {
 }
 
 
-
-function getAnimeById(id){
-    fetch(`https://api.jikan.moe/v4/anime/${id}`)
-    .then(response => {
-        return response.json()
-    }) 
-    .then(data => {
-        console.log('success', data.data)
-        alert(data.data.title)
-        //showDetails(data.data)                 //show detail hide tempo
-    })
-}
 function showDetails(anime){
     console.log('detail', anime.title)
     document.getElementById('modalTitle').innerText = anime.title 
@@ -315,6 +341,17 @@ function showDetails(anime){
     //document.getElementById('modalEng').innerText = anime.title
     document.getElementById('modalSynopsis').innerText = anime.synopsis
     document.getElementById('modalLink').href = anime.url
+}
+function getAnimeById(id){ //used to show data the not in that api (not used by now)
+    fetch(`https://api.jikan.moe/v4/anime/${id}`)
+    .then(response => {
+        return response.json()
+    }) 
+    .then(data => {
+        console.log('success', data.data)
+        alert(data.data.title)
+        //showDetails(data.data)                 //show detail hide tempo
+    })
 }
 
 function getGenre() {  //get all anime genre
@@ -437,9 +474,7 @@ function hideFavorite() {
 function showFavorite(){
     document.getElementById('favList').style.display = 'flex'
 }
-document.getElementById('favoritePage').addEventListener('click', ()=>{
-    showLike()
-})
+document.getElementById('favoritePage').addEventListener('click', showLike)
 
 function hideAll() {
     hideHome()
