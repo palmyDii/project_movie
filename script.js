@@ -54,7 +54,7 @@ function addSearch(data) { //search - add result to display
     likeBox.appendChild(like)
 
     like.addEventListener('click', (e)=>{
-        likeToggle(data)
+        addAnimeToLike()
     })
 
     textBody.appendChild(likeBox)
