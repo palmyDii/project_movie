@@ -128,7 +128,7 @@ function addSearch(data) { //search - add result to display
         if(noDuplicate) {
             likeToggle(data)
         } else {
-            alert('This anime is already the favorites list.')
+            alert('This anime is already in the favorite list.')
         }        
     }
     async function deleteAnimefromLike(mal_id) {    
@@ -154,9 +154,21 @@ function clickSearch(search) {
 
     document.getElementById('searchWord').value = searchWord
 }
+document.getElementById('searchWordHome').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('search').click()
+    }
+});
 document.getElementById('search').addEventListener('click', () => {
     clickSearch('searchWordHome')
 })
+document.getElementById('searchWord').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('search-addon').click()
+    }
+});
 document.getElementById('search-addon').addEventListener('click', () => {
     clickSearch('searchWord')
 })
