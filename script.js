@@ -1,3 +1,5 @@
+const userId = 316;
+
 function getAnimeSearch(searchWord) { //search anime by name
     fetch(`https://api.jikan.moe/v4/anime?q=${searchWord}&page=1`)
     //fetch(`https://api.jikan.moe/v4/seasons/2018/summer`)
@@ -134,7 +136,7 @@ function addSearch(data) { //search - add result to display
 
         for(let id of response){
             if(id.malId == mal_id) {
-                deleteLikeAnime(316, id.movId)
+                deleteLikeAnime(userId, id.movId)
                 console.log(id.movId)
                 break
             }
@@ -162,7 +164,7 @@ document.getElementById('search-addon').addEventListener('click', () => {
 function likeClicked(data) { //click to post
     console.log('like click come')
     let anime = {};
-    anime.id = "316"
+    anime.id = userId
     anime.movie = {
         'url' : data.url,
         'image_url' : data.images.jpg.image_url,
@@ -263,12 +265,12 @@ function addLike(anime) { //3
     let likeBut = document.createElement('button')
     likeBut.classList.add('btn', 'border-danger', 'me-3')
     let likeIcon = document.createElement('i')
-    likeIcon.classList.add('bi', 'bi-heart-fill', 'text-danger')
+    likeIcon.classList.add('bi', 'bi-trash-fill', 'text-danger') //bi-heart-fill
     likeBut.appendChild(likeIcon)
     likeBut.addEventListener('click', ()=> {
         let cf = confirm(`Delete '${anime.title}' from favorite list ?`)
         if(cf) {
-            deleteLikeAnime(316, anime.id)
+            deleteLikeAnime(userId, anime.id)
         }
     })
 
@@ -293,7 +295,7 @@ function addLike(anime) { //3
     favList.appendChild(col)
 }
 function getLike() { //2
-    fetch(`https://se104-project-backend.du.r.appspot.com/movies/316`)
+    fetch(`https://se104-project-backend.du.r.appspot.com/movies/${userId}`)
     .then(response => {
         return response.json()
     }) 
@@ -305,7 +307,7 @@ function getLike() { //2
     })
 }
 function getLikeValue() {
-    return fetch(`https://se104-project-backend.du.r.appspot.com/movies/316`)
+    return fetch(`https://se104-project-backend.du.r.appspot.com/movies/${userId}`)
     .then(response => {
         return response.json()
     }) 
@@ -322,7 +324,6 @@ function getLikeValue() {
         return animeLiked
     })
 }
-
 
 function showDetails(anime){
     console.log('detail', anime.title)
@@ -387,21 +388,21 @@ function addGenre(genre) { // home - display categories
     outerBox.classList.add('col')
 
     let box = document.createElement('div')
-    box.classList.add('card')
-    box.classList.add('text-center')
-    box.classList.add('py-5')  
+    box.classList.add('card', 'text-center', 'py-5')
+    box.classList.add('category-bg', 'shadow')
+
     
     let boxBody = document.createElement('div')
     boxBody.classList.add('card-body')
     box.appendChild(boxBody)
 
     let name = document.createElement('h5')
-    name.classList.add('card-title')
+    name.classList.add('card-title', 'text-white')
     name.innerText = genre.name
     boxBody.appendChild(name)
 
     let count = document.createElement('p')
-    count.classList.add('card-text')
+    count.classList.add('card-text', 'text-white')
     count.innerText = '(' + genre.count + ')'
     boxBody.appendChild(count)
 
